@@ -31,14 +31,23 @@ class Block{
 
 const genesisBlock: Block = new Block(0, "120202020", "", "Hello", 123456);
 
-let blockchain: Block[] = [genesisBlock]
-
-console.log(blockchain);
+let blockchain: Block[] = [genesisBlock];
 
 const getBlockchain = () : Block[] => blockchain;
 
 const getLatestBlcok = () : Block => blockchain[blockchain.length - 1];
 
 const getNewTimeStamp = () : number => Math.round(new Date().getTime() / 1000);
+
+const createNewBlock = (data: string) : Block => {
+    const previousBlock : Block = getLatestBlcok();
+    const newIndex : number = previousBlock.index + 1;
+    const newTimeStamp : number = getNewTimeStamp();
+    const newHash : string = Block.calculateBlockHash(newIndex, previousBlock.hash, newTimeStamp, data);
+    const newBlock : Block = new Block(newIndex, newHash, previousBlock.hash, data, newTimeStamp);
+    return newBlock;
+};
+
+console.log(createNewBlock("Hello"),createNewBlock("byebye"));
 
 export {};
