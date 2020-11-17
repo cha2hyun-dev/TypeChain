@@ -42,12 +42,12 @@ let blockchain: Block[] = [genesisBlock];
 
 const getBlockchain = () : Block[] => blockchain;
 
-const getLatestBlcok = () : Block => blockchain[blockchain.length - 1];
+const getLatestBlock = () : Block => blockchain[blockchain.length - 1];
 
 const getNewTimeStamp = () : number => Math.round(new Date().getTime() / 1000);
 
 const createNewBlock = (data: string) : Block => {
-    const previousBlock : Block = getLatestBlcok();
+    const previousBlock : Block = getLatestBlock();
     const newIndex : number = previousBlock.index + 1;
     const newTimeStamp : number = getNewTimeStamp();
     const newHash : string = Block.calculateBlockHash(newIndex, previousBlock.hash, newTimeStamp, data);
@@ -55,16 +55,27 @@ const createNewBlock = (data: string) : Block => {
     return newBlock;
 };
 
+const getHashforBlock = (aBlock:Block) : string => Block.calculateBlockHash(aBlock.index, aBlock.previousHash, aBlock.timestamp, aBlock.data);
+
 const isBlockValid = (candidateBlock : Block, previousBlock: Block) : boolean => {
     if(!Block.validateStructure(candidateBlock)) {
         return false;
-    } else if(previousBlock.index + 1 !=== candidateBlock.index) {
+    } else if(previousBlock.index + 1 !== candidateBlock.index) {
         return false;
-    } else if(previousBlock.hash !=== candidateBlock.previousHash) {
+    } else if(previousBlock.hash !== candidateBlock.previousHash) {
         return false;
-    } else if()
+    } else if(getHashforBlock(candidateBlock) !== candidateBlock.hash) {
+        return false;
+    } else {
+        return true;
+    }
 };
 
+const addBlock = (candidateBlock: Block) : void => {
+    if(isBlockValid(candidateBlock, getLatestBlock())){
+        blockchain.push(candidateBlock);
+    }
+}
 console.log(createNewBlock("Hello"),createNewBlock("byebye"));
 
 export {};
